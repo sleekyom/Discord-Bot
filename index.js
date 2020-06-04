@@ -8,10 +8,37 @@
 // Privet () - Kak dila!
 
 const Discord = require('discord.js');
+const axios = require('axios').default;
 const client = new Discord.Client();
 require('dotenv').config()
 const token= process.env.MY_TOKEN
 
+// BUILDING CURRENCY CONVERTER FEATURE INTO MY BOT
+
+const fixerioEndpoint= "http://http://data.fixer.io/api/latest?access_key=0966f0ee81643c0679266d4eff82748a&symbols=USD,AUD,CAD,PLN,MXN&format=1.fixer.io/api/";
+//const fixerioEndpoint= "http://data.fixer.io/api/";
+
+const getLatestRates = () => {
+    
+// Make a request for latest conversion rate
+axios.get(fixerioEndpoint)
+  .then(function (response) {
+    // handle success
+    let lastest_rate = response.data;
+    console.log(lastest_rate);
+  })
+  .catch(function (error) {
+    // handle error
+    console.log(error);
+  })
+  .finally(function () {
+    // always executed
+  })
+  
+};
+
+
+// GREETING FEATURE
 client.on('ready', () => {
     console.log(`Logged in as ${client.user.tag}!`);
 });
