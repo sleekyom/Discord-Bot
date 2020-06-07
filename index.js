@@ -13,29 +13,49 @@ const client = new Discord.Client();
 require('dotenv').config()
 const token= process.env.MY_TOKEN
 
-// BUILDING CURRENCY CONVERTER FEATURE INTO MY BOT
+// // BUILDING CURRENCY CONVERTER FEATURE INTO MY BOT
+const fixerioEndpoint= "http://data.fixer.io/api/latest?access_key=0966f0ee81643c0679266d4eff82748a&symbols=USD,AUD,CAD,PLN,MXN&format=1";
+// //const fixerioEndpoint= "http://data.fixer.io/api/";
 
-const fixerioEndpoint= "http://http://data.fixer.io/api/latest?access_key=0966f0ee81643c0679266d4eff82748a&symbols=USD,AUD,CAD,PLN,MXN&format=1.fixer.io/api/";
-//const fixerioEndpoint= "http://data.fixer.io/api/";
 
-const getLatestRates = () => {
-    
-// Make a request for latest conversion rate
+
+const getRates = (resp) => {
 axios.get(fixerioEndpoint)
-  .then(function (response) {
-    // handle success
-    let lastest_rate = response.data;
-    console.log(lastest_rate);
-  })
+  .then(resp)
   .catch(function (error) {
     // handle error
     console.log(error);
   })
   .finally(function () {
     // always executed
+    return null;
+  });
+}
+
+
+const grabCurrencyValue = (input) => {
+  const [fromValue, toValue] = input.split("to");
+  console.log(fromValue, toValue);
+  const [amountToConvert, baseCurrency] = fromValue.trim().split(" ");
+  console.log(amountToConvert, baseCurrency);
+
+  //Convert currency
+  getRates(result =>{
+    finalResult = result.data.rates[baseCurrency] * amountToConvert
+
+    return (client.on('message', msg => {
+      if (!msg.author.bot) {
+        msg.reply(finalResult);
+      }
+    }));
+
+    console.log('did you get here');
+    
   })
   
-};
+}
+
+
 
 
 // GREETING FEATURE
@@ -59,10 +79,12 @@ client.on('message', msg => {
                 msg.reply('Terevist')
                 break;
             default:
-                msg.reply('I am unable to process this word presently')
+                msg.reply(grabCurrencyValue(msg.content));
                 break;
         }
     }
 });
+
+
 
 client.login(token);
